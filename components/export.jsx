@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styles from "../styles/Export.module.css";
 
 const CONTEXT_OPTIONS = ["around", "after", "before"];
+const TIP =
+  "Ensure your signed in user and the bot both have the permission to read the message";
 
 function ContextSelect(props) {
   return (
@@ -22,9 +24,17 @@ export default function Export() {
     event.preventDefault();
     const params = new URLSearchParams(new FormData(event.target).entries());
     setPreview("Loading...");
-    const res = await fetch(`${event.target.action}?${params}`);
-    const { markdown } = await res.json();
-    setPreview(markdown);
+    try {
+      const res = await fetch(`${event.target.action}?${params}`);
+      const resJson = await res.json();
+      if (res.ok) {
+        setPreview(resJson.markdown);
+      } else {
+        setPreview(`error: ${resJson.message}\n${TIP}`);
+      }
+    } catch (e) {
+      setPreview(`error: ${e}\n${TIP}`);
+    }
   };
 
   return (
