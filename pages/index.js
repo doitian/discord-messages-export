@@ -3,7 +3,7 @@ import styles from "../styles/Home.module.css";
 import RequireSession from "../components/require-session.jsx";
 import Export from "../components/export";
 
-export default function Home() {
+export default function Home({ auth }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -18,10 +18,20 @@ export default function Home() {
       <main className={styles.main}>
         <h1 className={styles.title}>Discord Messages Export</h1>
 
-        <RequireSession>
+        <RequireSession auth={auth}>
           <Export />
         </RequireSession>
       </main>
     </div>
   );
+}
+
+export function getStaticProps() {
+  return {
+    props: {
+      auth: {
+        clientId: process.env.DISCORD_CLIENT_ID,
+      },
+    },
+  };
 }

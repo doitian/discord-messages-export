@@ -8,9 +8,15 @@ export default NextAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
       authorization: {
         params: {
-          scope: 'identify messages.read'
-        }
-      }
+          scope: "identify guilds.members.read",
+        },
+      },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      session.userId = token.sub;
+      return session;
+    },
+  },
 });

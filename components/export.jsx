@@ -5,7 +5,7 @@ const CONTEXT_OPTIONS = ["around", "after", "before"];
 
 function ContextSelect(props) {
   return (
-    <select name="context" ariaLabel="Context" {...props}>
+    <select name="context" aria-label="Context" {...props}>
       {CONTEXT_OPTIONS.map((option) => (
         <option key={option} value={option}>
           {option}
@@ -18,20 +18,22 @@ function ContextSelect(props) {
 export default function Export() {
   const [preview, setPreview] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setPreview(
-      JSON.stringify(
-        Object.fromEntries(new FormData(event.target).entries()),
-        null,
-        2
-      )
-    );
+    const params = new URLSearchParams(new FormData(event.target).entries());
+    setPreview("Loading...");
+    const res = await fetch(`${event.target.action}?${params}`);
+    const { markdown } = await res.json();
+    setPreview(markdown);
   };
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form
+        action="/api/message"
+        onSubmit={handleSubmit}
+        className={styles.form}
+      >
         <div className={styles.row}>
           Get{" "}
           <input
@@ -41,8 +43,8 @@ export default function Export() {
             size="4"
             name="limit"
             defaultValue="4"
-            ariaLabel="Limit"
             required
+            aria-label="Limit"
           />{" "}
           messages
           <ContextSelect defaultValue="around" />
@@ -51,13 +53,14 @@ export default function Export() {
             className={styles.url}
             type="text"
             name="url"
-            ariaLabel="URL"
+            defaultValue="https://discord.com/channels/681019635016925184/879539454807801874/968162680118591538"
             required
+            aria-label="URL"
           />
         </div>
         <input type="submit" value="Export" />
       </form>
-      <pre>{preview}</pre>
+      <textarea rows="20" className={styles.preview}>{preview}</textarea>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 .container {
     flex: 1;
+    display: flex;
+    flex-flow: column;
     max-width: 68em;
     width: 100%;
     margin: auto;
@@ -21,4 +23,10 @@
 
 .url {
     flex: 1;
+}
+
+.preview {
+    flex: 1;
+    margin: 1em 0;
+    width: 100%;
 }
