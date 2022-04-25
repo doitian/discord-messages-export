@@ -60,7 +60,14 @@ export default function Export() {
         </div>
         <input type="submit" value="Export" />
       </form>
-      <textarea rows="20" className={styles.preview}>{preview}</textarea>
+      <textarea
+        rows="20"
+        value={preview}
+        className={styles.preview}
+        onChange={(e) => setPreview(e.target.value)}
+      >
+        {preview}
+      </textarea>
     </div>
   );
 }

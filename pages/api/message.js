@@ -79,7 +79,9 @@ async function serveMessages(
   const messages = await channel.messages.fetch(options);
 
   res.status(200).json({
-    markdown: `[※ Open Thread in Discord](${url})\n\n${format(messages)}`,
+    markdown: `[※ Open Thread in Discord](${url})\n\n${format(
+      Array.from(messages.values())
+    )}`,
   });
 }
 
