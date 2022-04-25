@@ -53,7 +53,6 @@ export default function Export() {
             className={styles.url}
             type="text"
             name="url"
-            defaultValue="https://discord.com/channels/681019635016925184/879539454807801874/968162680118591538"
             required
             aria-label="URL"
           />
