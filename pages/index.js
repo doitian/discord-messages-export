@@ -1,6 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import RequireSession from "../components/require-session.jsx";
+import Export from "../components/export";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
         <h1 className={styles.title}>Discord Messages Export</h1>
 
         <RequireSession>
+          <Export />
         </RequireSession>
       </main>
     </div>
