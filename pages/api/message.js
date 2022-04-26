@@ -26,13 +26,18 @@ function indentText(text, prefix) {
 
 function formatOneEmbed(embed) {
   const lines = [];
-  const title =
-    embed.url === null
-      ? `**${escapeText(embed.title)}**`
-      : `[**${escapeText(embed.title)}**](${embed.url})`;
-  lines.push(`    > ${title}`);
-  lines.push(`    >`);
-  lines.push(indentText(scrubText(embed.description), "    > "));
+  if (embed.title !== null) {
+    const title =
+      embed.url === null
+        ? `**${escapeText(embed.title)}**`
+        : `[**${escapeText(embed.title)}**](${embed.url})`;
+    lines.push(`    > ${title}`);
+    lines.push(`    >`);
+  } else if (embed.url !== null) {
+    lines.push(`    > <${embed.url}>`);
+    lines.push(`    >`);
+  }
+  lines.push(indentText(scrubText(embed.description || ""), "    > "));
   const thumbnail = embed.thumbnail;
   if (thumbnail !== null) {
     lines.push("    >");
@@ -54,7 +59,7 @@ function formatOneMessage(message) {
   return [
     `- **${message.author.username}** (${message.createdAt.toLocaleString()}):`,
     "",
-    indentText(scrubText(message.content), "    "),
+    indentText(scrubText(message.content || ""), "    "),
     embeds,
   ].join("\n");
 }
