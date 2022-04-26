@@ -32,12 +32,15 @@ function formatOneEmbed(embed) {
         ? `**${escapeText(embed.title)}**`
         : `[**${escapeText(embed.title)}**](${embed.url})`;
     lines.push(`    > ${title}`);
-    lines.push(`    >`);
   } else if (embed.url !== null) {
     lines.push(`    > <${embed.url}>`);
-    lines.push(`    >`);
   }
-  lines.push(indentText(scrubText(embed.description || ""), "    > "));
+  if (embed.description !== null && embed.description.trim() !== null) {
+    if (lines.length > 0) {
+      lines.push(`    >`);
+    }
+    lines.push(indentText(scrubText(embed.description || ""), "    > "));
+  }
   const thumbnail = embed.thumbnail;
   if (thumbnail !== null) {
     lines.push("    >");
@@ -57,7 +60,6 @@ function formatEmbeds(embeds) {
 function handleUserMentions(discord, text) {
   return text.replace(MessageMentions.USERS_PATTERN, (_match, id) => {
     const user = discord.users.cache.get(id);
-    console.log(user);
     return user.username;
   });
 }
