@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import styles from "../styles/Export.module.css";
 
 const CONTEXT_OPTIONS = ["around", "after", "before"];
-const TIP =
-  "Ensure your signed in user and the bot both have the permission to read the message";
+const TIP = [
+  "1. Sign in with the user who has the permission to read the messages.",
+  "2. Invite bot to your server and ensure the bot can read the messages.",
+  "3. Paste the message link and export.",
+].join("\n");
 
 function ContextSelect(props) {
   return (
@@ -18,7 +21,7 @@ function ContextSelect(props) {
 }
 
 export default function Export() {
-  const [preview, setPreview] = useState("");
+  const [preview, setPreview] = useState(TIP);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,10 +33,10 @@ export default function Export() {
       if (res.ok) {
         setPreview(resJson.markdown);
       } else {
-        setPreview(`error: ${resJson.message}\n${TIP}`);
+        setPreview(`error: ${resJson.message}\n\n${TIP}`);
       }
     } catch (e) {
-      setPreview(`error: ${e}\n${TIP}`);
+      setPreview(`error: ${e}\n\n${TIP}`);
     }
   };
 
