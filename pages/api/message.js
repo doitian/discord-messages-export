@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/react";
-import { Client, Intents, Channel, Permissions } from "discord.js";
+import { Client, Intents, Permissions, MessageMentions } from "discord.js";
 
 function unauthorized(res) {
   return res.status(401).json({
@@ -54,18 +54,32 @@ function formatEmbeds(embeds) {
   return "";
 }
 
-function formatOneMessage(message) {
+function handleUserMentions(discord, text) {
+  return text.replace(MessageMentions.USERS_PATTERN, (_match, id) => {
+    const user = discord.users.cache.get(id);
+    console.log(user);
+    return user.username;
+  });
+}
+
+function formatOneMessage(discord, message) {
   const embeds = formatEmbeds(message.embeds);
   return [
     `- **${message.author.username}** (${message.createdAt.toLocaleString()}):`,
     "",
-    indentText(scrubText(message.content || ""), "    "),
+    indentText(
+      scrubText(handleUserMentions(discord, message.content || "")),
+      "    "
+    ),
     embeds,
   ].join("\n");
 }
 
-function formatMessages(messages) {
-  return messages.reverse().map(formatOneMessage).join("\n");
+function formatMessages(discord, messages) {
+  return messages
+    .reverse()
+    .map((m) => formatOneMessage(discord, m))
+    .join("\n");
 }
 
 async function canRead(discord, { userId, channelId, guildId }) {
@@ -89,6 +103,7 @@ async function serveMessages(
 
   res.status(200).json({
     markdown: `[※ Open Thread in Discord](${url})\n\n${formatMessages(
+      discord,
       Array.from(messages.values())
     )}`,
   });
