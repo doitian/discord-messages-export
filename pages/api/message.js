@@ -8,11 +8,15 @@ function unauthorized(res) {
   });
 }
 
-function escape(text) {
+function escapeText(text) {
   return text.replace(/[\[\]]/g, "\\$&");
 }
 
-function indent(text, prefix) {
+function scrubText(text) {
+  return text.replace(/[\u2028]/g, "");
+}
+
+function indentText(text, prefix) {
   if (text !== "") {
     return prefix + text.replace(/(\r|\n|\r\n)/g, `\n${prefix}`);
   }
@@ -24,11 +28,11 @@ function formatOneEmbed(embed) {
   const lines = [];
   const title =
     embed.url === null
-      ? `**${escape(embed.title)}**`
-      : `[**${escape(embed.title)}**](${embed.url})`;
+      ? `**${escapeText(embed.title)}**`
+      : `[**${escapeText(embed.title)}**](${embed.url})`;
   lines.push(`    > ${title}`);
   lines.push(`    >`);
-  lines.push(indent(embed.description, "    > "));
+  lines.push(indentText(scrubText(embed.description), "    > "));
   const thumbnail = embed.thumbnail;
   if (thumbnail !== null) {
     lines.push("    >");
@@ -45,18 +49,18 @@ function formatEmbeds(embeds) {
   return "";
 }
 
-function formatOne(message) {
+function formatOneMessage(message) {
   const embeds = formatEmbeds(message.embeds);
   return [
     `- **${message.author.username}** (${message.createdAt.toLocaleString()}):`,
     "",
-    indent(message.content, "    "),
+    indentText(scrubText(message.content), "    "),
     embeds,
   ].join("\n");
 }
 
-function format(messages) {
-  return messages.reverse().map(formatOne).join("\n");
+function formatMessages(messages) {
+  return messages.reverse().map(formatOneMessage).join("\n");
 }
 
 async function canRead(discord, { userId, channelId, guildId }) {
@@ -79,7 +83,7 @@ async function serveMessages(
   const messages = await channel.messages.fetch(options);
 
   res.status(200).json({
-    markdown: `[※ Open Thread in Discord](${url})\n\n${format(
+    markdown: `[※ Open Thread in Discord](${url})\n\n${formatMessages(
       Array.from(messages.values())
     )}`,
   });
