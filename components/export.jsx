@@ -44,7 +44,7 @@ export default function Export() {
     } else {
       setPreview(TIP);
     }
-  });
+  }, [query]);
 
   return (
     <div className={styles.container}>
