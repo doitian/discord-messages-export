@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import styles from "../styles/Export.module.css";
 
 const CONTEXT_OPTIONS = ["around", "after", "before"];
@@ -21,32 +22,33 @@ function ContextSelect(props) {
 }
 
 export default function Export() {
-  const [preview, setPreview] = useState(TIP);
+  const [preview, setPreview] = useState("Loading...");
+  const { query } = useRouter();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams(new FormData(event.target).entries());
-    setPreview("Loading...");
-    try {
-      const res = await fetch(`${event.target.action}?${params}`);
-      const resJson = await res.json();
-      if (res.ok) {
-        setPreview(resJson.markdown);
-      } else {
-        setPreview(`error: ${resJson.message}\n\n${TIP}`);
-      }
-    } catch (e) {
-      setPreview(`error: ${e}\n\n${TIP}`);
+  useEffect(() => {
+    if (query.url !== undefined && query.url !== null) {
+      const fetchMessages = async function () {
+        try {
+          const res = await fetch(`/api/message?${new URLSearchParams(query)}`);
+          const resJson = await res.json();
+          if (res.ok) {
+            setPreview(resJson.markdown);
+          } else {
+            setPreview(`error: ${resJson.message}\n\n${TIP}`);
+          }
+        } catch (e) {
+          setPreview(`error: ${e}\n\n${TIP}`);
+        }
+      };
+      fetchMessages();
+    } else {
+      setPreview(TIP);
     }
-  };
+  });
 
   return (
     <div className={styles.container}>
-      <form
-        action="/api/message"
-        onSubmit={handleSubmit}
-        className={styles.form}
-      >
+      <form action="/" className={styles.form}>
         <div className={styles.row}>
           Get{" "}
           <input
@@ -55,17 +57,18 @@ export default function Export() {
             max="100"
             size="4"
             name="limit"
-            defaultValue="4"
+            defaultValue={query.limit}
             required
             aria-label="Limit"
           />{" "}
           messages
-          <ContextSelect defaultValue="around" />
+          <ContextSelect defaultValue={query.context} />
           the one with the URL
           <input
             className={styles.url}
             type="text"
             name="url"
+            defaultValue={query.url}
             required
             aria-label="URL"
           />

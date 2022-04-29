@@ -7,7 +7,7 @@ export default function RequireSession({ auth, children }) {
   const inviteParams = new URLSearchParams({
     client_id: auth.clientId,
     scope: "bot",
-    permissions: 1024,
+    permissions: 3072,
   });
   const inviteLink = `https://discord.com/api/oauth2/authorize?${inviteParams}`;
 
