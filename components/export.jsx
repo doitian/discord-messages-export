@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/Export.module.css";
+import { DEFAULT_QUERY } from "../pages/api/message";
 
 const CONTEXT_OPTIONS = ["around", "after", "before"];
 const TIP = [
@@ -46,6 +47,8 @@ export default function Export() {
     }
   }, [query]);
 
+  const queryDef = { ...DEFAULT_QUERY, ...query };
+
   return (
     <div className={styles.container}>
       <form action="/" className={styles.form}>
@@ -57,18 +60,18 @@ export default function Export() {
             max="100"
             size="4"
             name="limit"
-            defaultValue={query.limit}
+            defaultValue={queryDef.limit}
             required
             aria-label="Limit"
           />{" "}
           messages
-          <ContextSelect defaultValue={query.context} />
+          <ContextSelect defaultValue={queryDef.context} />
           the one with the URL
           <input
             className={styles.url}
             type="text"
             name="url"
-            defaultValue={query.url}
+            defaultValue={queryDef.url}
             required
             aria-label="URL"
           />
