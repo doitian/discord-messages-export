@@ -111,11 +111,6 @@ async function serveMessages(
   });
 }
 
-export const DEFAULT_QUERY = {
-  limit: 4,
-  context: "around",
-};
-
 export default async function async(req, res) {
   const session = await getSession({ req });
   if (session) {
@@ -128,7 +123,7 @@ export default async function async(req, res) {
       if (await canRead(discord, { userId, channelId, guildId })) {
         return serveMessages(
           discord,
-          { ...DEFAULT_QUERY, ...req.query, channelId, messageId },
+          { limit: 4, context: "around", ...req.query, channelId, messageId },
           res
         );
       }

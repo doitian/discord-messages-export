@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/Export.module.css";
-import { DEFAULT_QUERY } from "../pages/api/message";
 
 const CONTEXT_OPTIONS = ["around", "after", "before"];
 const TIP = [
@@ -47,7 +46,7 @@ export default function Export() {
     }
   }, [query]);
 
-  const queryDef = { ...DEFAULT_QUERY, ...query };
+  const queryDef = { limit: 4, context: "around", ...query };
 
   return (
     <div className={styles.container}>
