@@ -1,6 +1,6 @@
 import getRawBody from "raw-body";
+import { MessageFlags } from "discord.js";
 import nacl from "tweetnacl";
-import { fetchMessages } from "./message";
 
 const PING = 1;
 const APPLICATION_COMMAND = 2;
@@ -59,10 +59,8 @@ export default async function interaction(req, res) {
       res.status(200).json({
         type: CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          tts: false,
           content: `${process.env.NEXTAUTH_URL}?${options}`,
-          embeds: [],
-          allowed_mentions: { parse: [] },
+          flags: MessageFlags.FLAGS.SUPPRESS_EMBEDS,
         },
       });
       break;
@@ -71,10 +69,8 @@ export default async function interaction(req, res) {
       res.status(200).json({
         type: CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          tts: false,
           content: `Open the web page ${process.env.NEXTAUTH_URL}`,
-          embeds: [],
-          allowed_mentions: { parse: [] },
+          flags: MessageFlags.FLAGS.SUPPRESS_EMBEDS,
         },
       });
       break;
