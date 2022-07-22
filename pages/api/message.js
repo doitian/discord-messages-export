@@ -61,7 +61,9 @@ function formatAttachments(attachments) {
   const lines = [];
 
   for (const attachment of attachments) {
-    console.log(attachment);
+    lines.push('```');
+    lines.push(JSON.stringify(attachment));
+    lines.push('```');
     if (attachment.width !== undefined && attachment.width !== null) {
       lines.push(`   ![](${attachment.proxyURL})`);
     } else {
