@@ -60,10 +60,7 @@ function formatEmbeds(embeds) {
 function formatAttachments(attachments) {
   const lines = [];
 
-  for (const attachment of attachments) {
-    lines.push('```');
-    lines.push(JSON.stringify(attachment));
-    lines.push('```');
+  for (const attachment of attachments.values()) {
     if (attachment.width !== undefined && attachment.width !== null) {
       lines.push(`   ![](${attachment.proxyURL})`);
     } else {
@@ -92,7 +89,7 @@ function formatOneMessage(discord, message) {
       "    "
     ),
     embeds,
-    attachments
+    attachments,
   ].join("\n");
 }
 
