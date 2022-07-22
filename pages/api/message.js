@@ -57,16 +57,18 @@ function formatEmbeds(embeds) {
   return "";
 }
 
-function formatImages(attachments) {
-  const images = [];
+function formatAttachments(attachments) {
+  const lines = [];
 
   for (const attachment of attachments) {
-    if (attachment.content_type.startsWith("image/")) {
-      images.push(`   ![](${attachment.proxy_url})`)
+    if (attachment.width !== undefined && attachment.width !== null) {
+      lines.push(`   ![](${attachment.proxyURL})`);
+    } else {
+      lines.push(`   [${attachment.name}](${attachment.proxyURL})`);
     }
   }
 
-  return images.join("\n");
+  return lines.join("\n");
 }
 
 function handleUserMentions(discord, text) {
@@ -78,7 +80,7 @@ function handleUserMentions(discord, text) {
 
 function formatOneMessage(discord, message) {
   const embeds = formatEmbeds(message.embeds);
-  const images = formatImages(message.attachments);
+  const attachments = formatAttachments(message.attachments);
   return [
     `- **${message.author.username}** (${message.createdAt.toLocaleString()}):`,
     "",
@@ -87,7 +89,7 @@ function formatOneMessage(discord, message) {
       "    "
     ),
     embeds,
-    images
+    attachments
   ].join("\n");
 }
 
