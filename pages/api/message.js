@@ -67,6 +67,9 @@ function formatAttachments(attachments) {
       lines.push(`   [${attachment.name}](${attachment.proxyURL})`);
     }
   }
+  if (lines.length > 0) {
+    lines.push("");
+  }
 
   return lines.join("\n");
 }
